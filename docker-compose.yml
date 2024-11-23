@@ -1,10 +1,21 @@
 services:
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: pipeanayaparada/api_tienda:latest # Cambia esto por la imagen y etiqueta en Docker Hub
     ports:
-      - "3000:3000" 
+      - "3000:3000"
     environment:
-      - MONGO_URI=${MONGO_URI} 
-    
+      - MONGO_URI="mongodb+srv://pipeanayap:PipilloGaymer1@cluster0.efv8i.mongodb.net/tienda1?retryWrites=true&w=majority"
+
+# services:
+#   api:
+#     image: pipeanayaparada/api_tienda:latest
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - MONGO_URI=${var.MONGO_URI}
+#     restart: always
+#     depends_on:
+#       - mongo
+#     volumes:
+#       - ./api:/app
+#     command: npm start
