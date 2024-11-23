@@ -22,6 +22,7 @@ variable "DO_TOKEN" {
   type = string
 }
 
-variable "DOMAIN" {
+/* variable "DOMAIN" {
   type = string
 }
+ */

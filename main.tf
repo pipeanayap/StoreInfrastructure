@@ -1,5 +1,5 @@
 provider "digitalocean" {
-    token =  var.DO_TOKEN
+    token = var.DO_TOKEN
 }
 
 terraform {
@@ -24,24 +24,24 @@ terraform {
     }
 }
 
-resource "digitalocean_project" "api_tienda_project"{
-    name = "apitienda"
-    description="servidor para la tienda de star wars"
-    resources =  [digitalocean_droplet.api_tienda_droplet.urn]
+resource "digitalocean_project" "api-tienda-project" {
+    name        = "api-tienda"
+    description = "Servidor para la tienda de Star Wars"
+    resources   = [digitalocean_droplet.api-tienda-droplet.urn]
 }
 
-resource "digitalocean_ssh_key" "api_tienda_ssh_key" {
-    name       = "api_tienda_ssh_key"
-    public_key = file("./keys/api_tienda_keys.pub")  
+resource "digitalocean_ssh_key" "api-tienda-ssh-key" {
+    name       = "api-tienda-ssh-key"
+    public_key = file("./keys/api-tienda-keys.pub")  
 }
 
-resource "digitalocean_droplet" "api_tienda_droplet" {
-    image  = "ubuntu-20-04-x64"
-    name   = "api_tienda"
-    region = "sfo3"
-    size   = "s-2vcpu-4gb-120gb-intel"
-    ssh_keys = [digitalocean_ssh_key.api_tienda_ssh_key.id]
-    user_data = file("./docker-install.sh")
+resource "digitalocean_droplet" "api-tienda-droplet" {
+    image      = "ubuntu-20-04-x64"
+    name       = "api-tienda"
+    region     = "sfo3"
+    size       = "s-2vcpu-4gb-120gb-intel"
+    ssh_keys   = [digitalocean_ssh_key.api-tienda-ssh-key.id]
+    user_data  = file("./docker-install.sh")
 
     provisioner "remote-exec" {
         inline = [
@@ -49,23 +49,20 @@ resource "digitalocean_droplet" "api_tienda_droplet" {
             "mkdir -p /volumes/nginx/html",
             "mkdir -p /volumes/nginx/certs",
             "mkdir -p /volumes/nginx/vhostd",
-            "touch /proyects/.env",
-            "echo \"DB_NAME=${var.DB_NAME}\" >> /proyects/.env",
-            "echo \"DB_USER=${var.DB_USER}\" >> /proyects/.env",
-            "echo \"DB_CLUSTER=${var.DB_CLUSTER}\" >> /proyects/.env",
-            "echo \"DB_PASSWORD=${var.DB_PASSWORD}\" >> /proyects/.env",
-            # "echo \"DOMAIN=${var.DOMAIN}\" >> /proyects/.env",
-            # "echo \"USER_EMAIL=${var.USER_EMAIL}\" >> /proyects/.env"
+            "touch /projects/.env",
+            "echo \"DB_NAME=${var.DB_NAME}\" >> /projects/.env",
+            "echo \"DB_USER=${var.DB_USER}\" >> /projects/.env",
+            "echo \"DB_CLUSTER=${var.DB_CLUSTER}\" >> /projects/.env",
+            "echo \"DB_PASSWORD=${var.DB_PASSWORD}\" >> /projects/.env"
         ]
 
         connection {
             type        = "ssh"
             host        = self.ipv4_address
             user        = "root"
-            private_key = file("./keys/api_tienda_keys")
-      
+            private_key = file("./keys/api-tienda-keys")
         }
-    }   
+    }
 
     provisioner "file" {
         source      = "./docker-compose.yml"
@@ -75,20 +72,18 @@ resource "digitalocean_droplet" "api_tienda_droplet" {
             type        = "ssh"
             host        = self.ipv4_address
             user        = "root"
-            private_key = file("./keys/api_tienda_keys")
-  
+            private_key = file("./keys/api-tienda-keys")
         }
-
     }
 }
 
-resource "time_sleep" "wait_docker_install" {
-    depends_on = [ digitalocean_droplet.api_tienda_droplet ]
+resource "time_sleep" "wait-docker-install" {
+    depends_on = [digitalocean_droplet.api-tienda-droplet]
     create_duration = "200s"
 }
 
-resource "null_resource" "init_api"{
-        depends_on = [ time_sleep.wait_docker_install ]
+resource "null_resource" "init-api" {
+    depends_on = [time_sleep.wait-docker-install]
     provisioner "remote-exec" {
         inline = [
             "cd /projects",
@@ -97,15 +92,13 @@ resource "null_resource" "init_api"{
 
         connection {
             type        = "ssh"
-            host        = digitalocean_droplet.api_tienda_droplet.ipv4_address
+            host        = digitalocean_droplet.api-tienda-droplet.ipv4_address
             user        = "root"
-            private_key = file("./keys/api_tienda_keys")
-      
+            private_key = file("./keys/api-tienda-keys")
         }
     }
 }
 
 output "ip" {
-    value = digitalocean_droplet.api_tienda_droplet.ipv4_address 
+    value = digitalocean_droplet.api-tienda-droplet.ipv4_address 
 }
-
