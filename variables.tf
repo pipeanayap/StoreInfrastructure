@@ -22,7 +22,15 @@ variable "DO_TOKEN" {
   type = string
 }
 
-/* variable "DOMAIN" {
+variable "DOMAIN" {
   type = string
 }
- */
+
+variable "USER_EMAIL"{
+    type = string
+}
+
+variable "API_DOMAIN"{
+    type = string
+}
+ 

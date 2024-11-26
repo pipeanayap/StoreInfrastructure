@@ -53,7 +53,9 @@ resource "digitalocean_droplet" "api-tienda-droplet" {
             "echo \"DB_NAME=${var.DB_NAME}\" >> /projects/.env",
             "echo \"DB_USER=${var.DB_USER}\" >> /projects/.env",
             "echo \"DB_CLUSTER=${var.DB_CLUSTER}\" >> /projects/.env",
-            "echo \"DB_PASSWORD=${var.DB_PASSWORD}\" >> /projects/.env"
+            "echo \"DB_PASSWORD=${var.DB_PASSWORD}\" >> /projects/.env",
+            "echo \"DOMAIN=${var.DOMAIN}\" >> /projects/.env",
+            "echo \"USER_EMAIL=${var.USER_EMAIL}\" >> /projects/.env"
         ]
 
         connection {
@@ -79,7 +81,7 @@ resource "digitalocean_droplet" "api-tienda-droplet" {
 
 resource "time_sleep" "wait-docker-install" {
     depends_on = [digitalocean_droplet.api-tienda-droplet]
-    create_duration = "200s"
+    create_duration = "130s"
 }
 
 resource "null_resource" "init-api" {

@@ -1,21 +1,43 @@
 services:
   api:
     image: pipeanayaparada/api_tienda:latest # Cambia esto por la imagen y etiqueta en Docker Hub
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     environment:
-      - MONGO_URI="mongodb+srv://pipeanayap:PipilloGaymer1@cluster0.efv8i.mongodb.net/tienda1?retryWrites=true&w=majority"
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_CLUSTER=${DB_CLUSTER}
+      - VIRTUAL_HOST=${API_DOMAIN}
+      - VIRTUAL_PATH=/
+      - LETSENCRYPT_HOST=${API_DOMAIN}
+      - LETSENCRYPT_EMAIL=${USER_EMAIL}
 
-# services:
-#   api:
-#     image: pipeanayaparada/api_tienda:latest
-#     ports:
-#       - "3000:3000"
-#     environment:
-#       - MONGO_URI=${var.MONGO_URI}
-#     restart: always
-#     depends_on:
-#       - mongo
-#     volumes:
-#       - ./api:/app
-#     command: npm start
+    
+  reverse-proxy:
+    image: nginxproxy/nginx-proxy:alpine
+    container_name: 'Reverse-proxy'
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - VIRTUAL_HOST=${DOMAIN}
+      - VIRTUAL_PATH=/.well_known
+    volumes:
+      - /volumes/nginx/certs:/etc/nginx/certs:ro
+      - /volumes/nginx/vhostd:/etc/nginx/vhost.d
+      - /volumes/nginx/html:/usr/share/nginx/html:rw
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  lets-encrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    container_name: 'Lets-Encrypt'
+    restart: always
+    environment:
+      - NGINX_PROXY_CONTAINER=Reverse-proxy
+    volumes:
+      - /volumes/nginx/certs:/etc/nginx/certs
+      - /volumes/nginx/vhostd:/etc/nginx/vhost.d
+      - /volumes/nginx/html:/usr/share/nginx/html:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
