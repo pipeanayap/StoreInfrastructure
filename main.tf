@@ -55,7 +55,10 @@ resource "digitalocean_droplet" "api-tienda-droplet" {
             "echo \"DB_CLUSTER=${var.DB_CLUSTER}\" >> /projects/.env",
             "echo \"DB_PASSWORD=${var.DB_PASSWORD}\" >> /projects/.env",
             "echo \"DOMAIN=${var.DOMAIN}\" >> /projects/.env",
-            "echo \"USER_EMAIL=${var.USER_EMAIL}\" >> /projects/.env"
+            "echo \"USER_EMAIL=${var.USER_EMAIL}\" >> /projects/.env",
+            "echo \"API_DOMAIN=${var.API_DOMAIN}\" >> /projects/.env",
+            "echo \"MONGO_URI=${var.MONGO_URI}\" >> /projects/.env",
+            "echo \"DO_TOKEN=${var.DO_TOKEN}\" >> /projects/.env"
         ]
 
         connection {
