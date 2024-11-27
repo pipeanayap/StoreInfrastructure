@@ -61,6 +61,7 @@ resource "digitalocean_droplet" "api-tienda-droplet" {
             "echo \"DO_TOKEN=${var.DO_TOKEN}\" >> /projects/.env"
         ]
 
+
         connection {
             type        = "ssh"
             host        = self.ipv4_address
