@@ -41,3 +41,13 @@ services:
       - /volumes/nginx/vhostd:/etc/nginx/vhost.d
       - /volumes/nginx/html:/usr/share/nginx/html:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  # products-app:
+  #   image:
+  #   expose:
+  #     - "80"
+  #   environment:
+  #     - VIRTUAL_HOST=${DOMAIN}
+  #     - VIRTUAL_PATH=/
+  #     - LETSENCRYPT_HOST=${DOMAIN}
+  #     - LETSENCRYPT_EMAIL=${USER_EMAIL}

@@ -18,9 +18,6 @@ env:
   TF_VAR_MONGO_URI: ${{ secrets.MONGO_URI }}
   TF_VAR_DB_NAME: ${{ secrets.DB_NAME }}
 
-
-
-
 jobs:
   terraform-apply:
     runs-on: ubuntu-latest
